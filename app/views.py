@@ -6,13 +6,7 @@ from app.models import *
 from flask_cors import CORS
 from utils import WriteLog
 
-@app.route("/api/home")
-@auth.login_required
-def index():    
-    return jsonify('Hello, %s' % g.user.username)
-
-
-@app.route('/api/register', methods = ['POST'])
+@app.route('/devops/api/v1.0/register', methods = ['POST'])
 def register():
     username = request.json.get('username')
     password = request.json.get('password')
@@ -29,7 +23,6 @@ def register():
 @auth.verify_password
 def verify_password(username_or_token, password):
     username_token = request.headers.get('token')
-    print(username_token) 
     user = User.verify_auth_token(username_token)  
     if not user:
         return False    
@@ -37,11 +30,10 @@ def verify_password(username_or_token, password):
     return True
 
 
-@app.route('/api/login',methods=['POST'])
+@app.route('/devops/api/v1.0/login',methods=['POST'])
 def get_auth_token(): 
     username = request.json.get('username') 
     password = request.json.get('password')
-    print(username,password)
     user = User.query.filter_by(username=username).first()
     if not user or not user.verify_password(password):
         return False

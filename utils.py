@@ -25,3 +25,22 @@ def WriteLog(log_name):
     logger.addHandler(handler)
     logger.setLevel(log_level)
     return logger         
+
+def process_result(data, output):
+    black = ["_sa_instance_state"]
+    ret = []
+    for obj in data:
+        if output:
+            tmp = {}
+            for f in output:
+                tmp[f] = getattr(obj, f)
+            ret.append(tmp)
+        else:
+            tmp = obj.__dict__
+            for p in black:
+                try:
+                    tmp.pop(p)
+                except:
+                    pass 
+            ret.append(tmp)
+    return ret
