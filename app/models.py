@@ -19,7 +19,7 @@ class User(db.Model):
     # 获取token，有效时间10min
     def generate_auth_token(self, expiration = 600):
         s = Serializer(app.config['SECRET_KEY'], expires_in = expiration) 
-        return s.dumps({ 'id': self.id })
+        return s.dumps({ 'id':self.id,'username':self.username})
 
     @staticmethod
     def verify_auth_token(token):

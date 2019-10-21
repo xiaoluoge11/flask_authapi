@@ -10,7 +10,6 @@ class UserAPI(Resource):
     def get(self):
         users = User.query.all()
         result=process_result(users,[])
-        print('hello ,%s' % g.user.username) 
         return jsonify(result)
 
 api.add_resource(UserAPI, '/devops/api/v1.0/user', endpoint = 'user')
