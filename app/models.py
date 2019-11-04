@@ -29,9 +29,10 @@ class User(db.Model):
         return custom_app_context.verify(password, self.password)
 
     # 获取token，有效时间10min
-    def generate_auth_token(self, expiration = 600):
-        s = Serializer(app.config['SECRET_KEY'], expires_in = expiration) 
-        return s.dumps({ 'id':self.id,'username':self.username})
+    def generate_auth_token(self, expiration = 6000):
+        s = Serializer(app.config['SECRET_KEY'], expires_in = expiration)
+        roles=[i.name for i in self.roles]
+        return s.dumps({'id':self.id,'username':self.username,'roles':roles})
 
     @staticmethod
     def verify_auth_token(token):

@@ -44,3 +44,16 @@ def process_result(data, output):
                     pass 
             ret.append(tmp)
     return ret
+
+def stru_key_value(data):
+    dic = {}
+    for a in data: 
+        dic.setdefault(a[0], []).append(a[1])
+    return dic
+
+def stru_data(data):
+    a=[]
+    for k in data:
+        for key,value in k.items():
+            a.append(value)
+    return a            

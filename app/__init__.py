@@ -13,4 +13,4 @@ db = SQLAlchemy(app)
 api=Api(app)
 auth = HTTPBasicAuth()
 
-from . import models, views, user
+from . import models, views, user,role

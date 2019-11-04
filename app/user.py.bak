@@ -11,48 +11,21 @@ class UserListAPI(Resource):
     def get(self):
         name = request.args.get('name')
         page = request.args.get('page',type=int)
-        user_role = []
         if not name:
             pagination = User.query.order_by(User.id.desc()).paginate(page,per_page=10,error_out=False)
             db.session.close()
             ret = pagination.items
-            result = process_result(ret, []) 
-            for i in result:
-                user = User.query.filter_by(id=i['id']).first()	
-                for k in user.roles:
-                    if not k.name:
-                        test = [user.id,{user.id:k.name}]
-                    test = [user.id,{user.id:k.name}]
-                    user_role.append(test)
-                str_data = stru_key_value(user_role)  
-            for ret in result:
-                for key,value in str_data.items(): 
-                    if ret['id'] == key:
-                        ret['user_role'] = '::'.join(stru_data(value)) 
+            result = process_result(ret, [])
             data = {'users':result}  
-            data['total']=pagination.total
-            print(data)
+            data['total']=pagination.total	
             return jsonify(data)
         else:
             pagination = User.query.filter(User.name.like('%' + name + '%')).paginate(page, per_page=10, error_out=False)
-            db.session.close()
             ret = pagination.items	
             result = process_result(ret, [])
-            for i in result:
-                user = User.query.filter_by(id=i['id']).first()
-                for k in user.roles:
-                    if not k.name:
-                        test = [user.id,{user.id:k.name}]
-                    test = [user.id,{user.id:k.name}]
-                    user_role.append(test)
-                str_data = stru_key_value(user_role)
-            for ret in result:
-                for key,value in str_data.items():
-                    if ret['id'] == key:
-                        ret['user_role'] = '-'.join(stru_data(value))
             data = {'users':result}
             data['total']=pagination.total
-            return jsonify(data) 
+            return jsonify(data)
     def post(self):
         data = request.get_json()['params']
         rows = [data]
@@ -70,9 +43,7 @@ class UserAPI(Resource):
         return  json.dumps({'errcode':0})       
     def put(self,id):
         data = request.get_json()['params']
-        data.pop('id')
-        if 'user_role' in data:
-            data.pop('user_role')
+        data.pop('id')                    
         ret = db.session.query(User).filter_by(id=id).update(data)
         db.session.commit()              
         return json.dumps({'errcode':0}) 

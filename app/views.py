@@ -38,7 +38,6 @@ def register():
 @auth.verify_password
 def verify_password(username_or_token, password):
     username_token = request.headers.get('token')
-    print(username_token)
     user = User.verify_auth_token(username_token)  
     if not user:
         return False    
@@ -52,7 +51,7 @@ def get_auth_token():
     password = request.json.get('password')
     user = User.query.filter_by(username=username).first()
     if not user or not user.verify_password(password):
-        return False
+        return jsonify({ 'code':400, 'msg':'请求失败'})
     g.user=user	
     WriteLog('api').info('user  is login')
     token = g.user.generate_auth_token()
