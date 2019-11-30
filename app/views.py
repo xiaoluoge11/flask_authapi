@@ -38,7 +38,7 @@ def register():
 @auth.verify_password
 def verify_password(username_or_token, password):
     username_token = request.headers.get('token')
-    user = User.verify_auth_token(username_token)  
+    user = User.verify_auth_token(username_token) 
     if not user:
         return False    
     g.user = user   

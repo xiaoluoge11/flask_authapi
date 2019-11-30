@@ -3,7 +3,8 @@
 
 import configparser
 import logging,logging.handlers
-
+from flask import render_template, json, jsonify, request, abort, g,make_response
+from functools import wraps
 
 def get_config(service_conf, section=''):
     config = configparser.ConfigParser()
@@ -57,3 +58,16 @@ def stru_data(data):
         for key,value in k.items():
             a.append(value)
     return a            
+
+
+def role_required(f):
+    """权限查看"""
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        roles=[i.name for i in g.user.roles]
+        #roles=['admin','user','cmdb']
+        print(roles)
+        if 'cmdb' in roles or 'admin' in roles: 
+            return f(*args,**kwargs)
+        return jsonify({'code':10003,'msg':'你没有权限'}) 
+    return wrapper

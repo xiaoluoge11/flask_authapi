@@ -54,3 +54,59 @@ class Role(db.Model):
     users = db.relationship('User', secondary=user_role, back_populates='roles') 
     def __repr__(self):
         return 'Role:%s'% self.name
+
+
+class Server(db.Model):
+    __tablename__ = 'server'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    hostname = db.Column(db.String(255))
+    manufacturers =  db.Column(db.String(255))
+    manufacturers_type = db.Column(db.String(255))
+    manufacture_date = db.Column(db.DateTime)
+    disk = db.Column(db.String(255))
+    cpu = db.Column(db.String(255))
+    memory = db.Column(db.String(255))
+    os = db.Column(db.String(255))
+    vm_status = db.Column(db.Integer)
+    sn = db.Column(db.String(255))
+    ip = db.Column(db.String(255))
+    mac_address = db.Column(db.String(255)) 
+    Product_id = db.Column(db.Integer)
+    Service_id = db.Column(db.Integer) 
+    def _repr_(self):
+        return 'Server:%s'% self.name   
+
+
+class Product(db.Model):
+    __tablename__    = 'product'
+    id               = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    service_name     = db.Column(db.String(20),comment='业务线名称')
+    pid              = db.Column(db.Integer, default=0,comment="顶级业务线")
+    module_letter    = db.Column(db.String(20),comment='业务线英文缩写')
+    dev_interface    = db.Column(db.String(200),comment='业务线开发负责人')
+    op_interface     = db.Column(db.String(100),comment='业务线运维负责人')
+    comment          = db.Column(db.String(100),comment='备注')
+    def _repr_(self):
+        return 'service_name:%s'% self.service_name
+
+
+class ZabbixConfig(db.Model):
+    __tablename__    = 'zabbixconfig'
+    id               = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name             = db.Column(db.String(40), nullable=False)
+    url       = db.Column(db.String(40), nullable=False, default=0)
+    username  = db.Column(db.String(40), nullable=False)
+    password  = db.Column(db.String(40), nullable=False)  
+
+
+class Zabbix_host(db.Model):
+    __tablename__ = 'zabbix_host'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    host = db.Column(db.String(255))
+    name = db.Column(db.String(255))
+    hostid = db.Column(db.String(255))
+    available = db.Column(db.Integer)
+    groups = db.Column(db.String(255))
+
+
+

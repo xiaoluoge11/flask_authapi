@@ -7,7 +7,7 @@ import json
 
 class UserListAPI(Resource):
     decorators = [auth.login_required]
-
+ 
     def get(self):
         name = request.args.get('name')
         page = request.args.get('page',type=int)

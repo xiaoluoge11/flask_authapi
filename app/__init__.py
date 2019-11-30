@@ -13,4 +13,5 @@ db = SQLAlchemy(app)
 api=Api(app)
 auth = HTTPBasicAuth()
 
-from . import models, views, user,role
+from . import models,views,user,role,server,product,service
+from .zabbix_util import zabbixconfig,zabbix_cpu,zabbix_tree
