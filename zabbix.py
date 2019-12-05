@@ -196,8 +196,37 @@ class Zabbix():
     def get_template(self,hostid):
         return self.zabbix.template.get(hostids=hostid, output=["templateid","name"]) 
 
+    def create_maintenance(self,name="test",hostids=10314,period=600):
+        data =  {
+            "name": name,
+            "active_since": int(time.time()),
+            "active_till": int(time.time()) + period,
+            "hostids": [
+                hostids
+            ],
+            "timeperiods": [
+                {
+                    "timeperiod_type": 0,
+                    "period": period
+                }
+            ]
+        }
+        ret = self.zb.maintenance.create(data)
+        return ret
+    ################获取维护周期，，#########################
+    def get_maintenance(self):
+        data = {
+            "output": "extend",
+            "selectGroups": "extend",
+            "selectTimeperiods": "extend"
+        }
+        ret = self.zb.maintenance.get(data)
+        return ret
+    ##############获取维护周期之后，通过传入maintenanceid删除维护周期###########
+    def del_maintenance(self,maintenanceids):
+        return self.zb.maintenance.delete(maintenanceids) 
+
 
 if __name__ == "__main__":
-    data = Zabbix('http://10.3.0.43/zabbix','Admin','zabbix')
-    for i in data.group_list():
-        print(data.host_list(i['groupid']))
+    data = Zabbix('http://192.168.75.133/zabbix','Admin','zabbix')
+    print(data.event_list())

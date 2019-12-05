@@ -15,7 +15,6 @@ class zabbixconfig():
         self.jsondata = result
     def init_zb_host(self):
         data = self.zabbix.host_list()
-        print(data)
         for host in data:
             host['groups'] = host['groups'][0]['name']
             hostid = Zabbix_host.query.filter_by(hostid=host['hostid']).all()
@@ -84,10 +83,10 @@ class syncAPI(Resource):
         zabbix_init.init_zb_host() 
         data = Zabbix_host.query.all()
         result = process_result(data, ['host'])
-        hosts = [i['host'] for i in result]
+        hosts = [i['host'] for i in result] #['192.168.1.1','192.168.1.2']
         ret = db.session.query(Server).filter(Server.ip.notin_(hosts)).all()
         result = process_result(ret, ['ip'])
-        data = [i['ip'] for i in result]	
+        data = [i['ip'] for i in result]	#['192.168.75.133','192.168.75.134']
         return jsonify(data)
 
     def post(self):
@@ -124,9 +123,11 @@ class TemplateAPI(Resource):
         ret = []
         data = request.get_json()['params']
         HostList = request.get_json()['ids']
+        #['1','2']
         for i in HostList.split(','):
             hostip=Server.query.filter_by(id=int(i)).first()
             ret.append(hostip.ip)
+        #ret['192.168.75.133','192.168.75.134']
         result = zabbixconfig().connet()                                                                    
         zabbix_init=Zabbix(result['url'],result['username'],result['password'])   	
         hostlist = zabbix_init.host_list()
@@ -142,7 +143,8 @@ class Product_ipAPI(Resource):
     def get(self):
         result = zabbixconfig().connet()
         zabbix_init=Zabbix(result['url'],result['username'],result['password'])
-        id = request.args.get('id') 
+        id = request.args.get('id')
+        print(id)
         label = request.args.get('label') 
         id_data = Product.query.filter_by(id=int(id)).first()
         if int(id_data.pid) == 0:
@@ -178,6 +180,8 @@ class Product_ipAPI(Resource):
 class zabbixlistAPI(Resource):
     decorators = [auth.login_required]
     def get(self):
+        zabbix_init = zabbixconfig()
+        zabbix_init.init_zb_host()
         data = Zabbix_host.query.all()                                                                                        
         result = process_result(data, [])        
         return jsonify(result) 
