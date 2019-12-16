@@ -21,12 +21,14 @@ class Zabbix():
     def host_list(self,group=None):
         if group:
             return self.zabbix.host.get(
-                output=['host', 'hostid', 'name', 'available'],
+                output=['host', 'hostid', 'name',
+                        'available','maintenance_status','maintenanceid'],
                 groupids=[group],
                 selectGroups=['name']
             )
         else:
-            return self.zabbix.host.get(output=['host', 'hostid', 'name', 'available'],selectGroups=['name'])
+            return self.zabbix.host.get(output=['host', 'hostid', 'name',
+                                                'available','maintenance_status','maintenanceid'],selectGroups=['name'])
 
 
     def cpu_list(self,hostid):
@@ -196,7 +198,7 @@ class Zabbix():
     def get_template(self,hostid):
         return self.zabbix.template.get(hostids=hostid, output=["templateid","name"]) 
 
-    def create_maintenance(self,name="test",hostids=10314,period=600):
+    def create_maintenance(self,name="test",hostids=10314,period=3600):
         data =  {
             "name": name,
             "active_since": int(time.time()),
@@ -211,7 +213,7 @@ class Zabbix():
                 }
             ]
         }
-        ret = self.zb.maintenance.create(data)
+        ret = self.zabbix.maintenance.create(data)
         return ret
     ################获取维护周期，，#########################
     def get_maintenance(self):
@@ -220,11 +222,11 @@ class Zabbix():
             "selectGroups": "extend",
             "selectTimeperiods": "extend"
         }
-        ret = self.zb.maintenance.get(data)
+        ret = self.zabbix.maintenance.get(data)
         return ret
     ##############获取维护周期之后，通过传入maintenanceid删除维护周期###########
     def del_maintenance(self,maintenanceids):
-        return self.zb.maintenance.delete(maintenanceids) 
+        return self.zabbix.maintenance.delete(maintenanceids) 
 
 
 if __name__ == "__main__":

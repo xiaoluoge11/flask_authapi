@@ -3,7 +3,7 @@
 from app import db, app
 from passlib.apps import custom_app_context
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer, SignatureExpired, BadSignature
-
+import datetime
 
 user_role = db.Table('user_role',db.Column('user_id', db.Integer, db.ForeignKey('user.id')),db.Column('role_id', db.Integer, db.ForeignKey('role.id')))
 
@@ -107,6 +107,18 @@ class Zabbix_host(db.Model):
     hostid = db.Column(db.String(255))
     available = db.Column(db.Integer)
     groups = db.Column(db.String(255))
+    maintenance_status = db.Column(db.Integer)
+    maintenanceid = db.Column(db.Integer)
 
 
-
+class Gongdan(db.Model):
+    __tablename__ = 'gongdan'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(255))
+    type = db.Column(db.String(255))
+    comment = db.Column(db.TEXT)
+    status = db.Column(db.Integer,default=0,)
+    userid = db.Column(db.Integer)
+    applicant = db.Column(db.Integer)
+    create_time = db.Column(db.DateTime, default=datetime.datetime.now)
+    explain = db.Column(db.TEXT,comment='驳回说明')

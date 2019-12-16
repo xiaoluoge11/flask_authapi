@@ -18,8 +18,10 @@ class zabbixconfig():
         for host in data:
             host['groups'] = host['groups'][0]['name']
             hostid = Zabbix_host.query.filter_by(hostid=host['hostid']).all()
-            if hostid:	
+            if hostid:
+                print(host)
                 db.session.query(Zabbix_host).filter_by(hostid=host['hostid']).update(host)
+                db.session.commit()
             else:
                 db.session.execute(Zabbix_host.__table__.insert(),[host]) 
                 db.session.commit() 
@@ -183,8 +185,30 @@ class zabbixlistAPI(Resource):
         zabbix_init = zabbixconfig()
         zabbix_init.init_zb_host()
         data = Zabbix_host.query.all()                                                                                        
-        result = process_result(data, [])        
+        result = process_result(data, [])
+        print(result)
         return jsonify(result) 
+
+
+
+class maintenanceAPI(Resource):
+    decorators = [auth.login_required]
+    def post(self):          
+        data = request.get_json()['params']
+        result = zabbixconfig().connet()
+        zabbix_init=Zabbix(result['url'],result['username'],result['password'])
+        zabbix_init.create_maintenance(name=data['hostid'],hostids=data['hostid'],period=3600)
+        return jsonify({'code':0,'msg':'进入维护周期'}) 
+
+
+
+class maintenanceUpdateAPI(Resource):
+    decorators = [auth.login_required]                                                                                               
+    def delete(self,id):
+        result = zabbixconfig().connet()
+        zabbix_init=Zabbix(result['url'],result['username'],result['password'])
+        zabbix_init.del_maintenance(id) 
+        return  jsonify({'code':0,'msg':'删除成功'})
 
 
 
@@ -196,3 +220,5 @@ api.add_resource(GroupAPI, '/devops/api/v1.0/getgroup',endpoint ='group')
 api.add_resource(TemplateAPI, '/devops/api/v1.0/template',endpoint ='template')
 api.add_resource(Product_ipAPI, '/devops/api/v1.0/getProduct_Ip',endpoint ='getProduct')
 api.add_resource(zabbixlistAPI, '/devops/api/v1.0/zabbixlist',endpoint ='zabbixlist')
+api.add_resource(maintenanceAPI, '/devops/api/v1.0/maintenance',endpoint ='maintenance')
+api.add_resource(maintenanceUpdateAPI, '/devops/api/v1.0/maintenance/<int:id>', endpoint = 'maintenanceupdate')

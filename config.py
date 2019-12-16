@@ -18,5 +18,23 @@ SQLAlCHEMY_ECHO=True
 CSRF_ENABLED = True
 SECRET_KEY = 'jklklsadhfjkhwbii9/sdf\sdf'
 
+#mail配置
+# Flask-Mail configuration
+MAIL_SERVER = 'smtp.qq.com'
+MAIL_PORT = 25
+MAIL_USE_TLS = True
+MAIL_USERNAME = '942729042@qq.com'
+MAIL_PASSWORD = 'tygowyeqpjprbebd'
+MAIL_DEFAULT_SENDER = '942729042@qq.com'
+
+# Celery configuration
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+
+#celery 时区设置
+CELERY_TIMEZONE = 'Asia/Shanghai'
+
+
+
 if __name__=="__main__":
     print(config)
